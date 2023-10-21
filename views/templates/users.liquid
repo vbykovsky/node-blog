@@ -1,0 +1,31 @@
+{% layout "./page.liquid" %}
+{% block content %}
+<div class="bg-white py-12">
+  <div class="mx-auto max-w-7xl px-6 lg:px-8">
+    <div class="flex justify-between items-center">
+        <div>
+            <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Users</h2>
+        </div>
+    </div>
+    <div class="mt-10 border-t border-gray-200 pt-10 grid grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
+        {% for user in data %}
+        <div class="grid sm:flex sm:items-center gap-y-3 gap-x-4">
+            <img class="rounded-full w-20 h-20" src="{{ user.avatar }}" alt="Image Description">
+
+            <div class="justify-center sm:flex sm:flex-col sm:h-full">
+                <div>
+                    <h3 class="font-medium text-gray-800 dark:text-gray-200">
+                        {{ user.displayName }}
+                    </h3>
+                </div>
+                <p class="mt-1 text-sm text-gray-500">
+                    {{ user.username  }}
+                </p>
+            </div>
+        </div>
+        <!-- End Col -->
+        {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

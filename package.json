@@ -1,0 +1,17 @@
+{
+  "name": "blog",
+  "scripts": {
+    "start": "ts-node ./main.ts",
+    "dev": "ts-node-dev ./main.ts"
+  },
+  "dependencies": {
+    "liquidjs": "^10.9.3",
+    "pg": "^8.11.3",
+    "sequelize": "^6.33.0",
+    "sqlite3": "^5.1.6",
+    "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.2.2",
+    "url-pattern": "^1.0.3"
+  }
+}
