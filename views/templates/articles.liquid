@@ -4,10 +4,12 @@
   <div class="mx-auto max-w-7xl px-6 lg:px-8">
     <div class="flex justify-between items-center">
         <div>
-            <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">My blog</h2>
+            <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Blog</h2>
             <p class="mt-2 text-lg leading-8 text-gray-600">Here you can read some interesting articles.</p>
         </div>
-      <a href="/create" class="w-12 h-12 inline-flex justify-center items-center gap-2 rounded-full border border-transparent font-semibold bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-xl dark:focus:ring-offset-gray-800">+</a>
+        {% if  authentication.isAuthenticated %}
+            <a href="/create" class="w-12 h-12 inline-flex justify-center items-center gap-2 rounded-full border border-transparent font-semibold bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-xl dark:focus:ring-offset-gray-800">+</a>
+        {% endif %}
     </div>
     <div class="mx-auto mt-10 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 border-t border-gray-200 pt-10 lg:max-w-none lg:grid-cols-3">
         {% for article in data %}
@@ -41,6 +43,8 @@
                     </div>
                 </div>
             </article>
+        {% else %}
+            No articles yet
         {% endfor %}
     </div>
   </div>

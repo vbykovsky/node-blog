@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="relative flex flex-col min-h-screen">
-  {% render './header.liquid' authorization: authorization %}
+  {% render './parts/header.liquid' authentication: authentication %}
   <div>
     {% block content %}Empty page{% endblock %}
   </div>
-  {% render './footer.liquid' %}
+  {% render './parts/footer.liquid' %}
 </body>
 </html>

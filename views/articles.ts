@@ -1,17 +1,16 @@
+import { View } from "../app/view";
+import { RequestAuthentication } from "../app/requests";
+
 import { Article } from "../models/article";
 
-import { View } from "./common/view";
-
-import { RequestAuthorization } from "../controllers/controllers";
-
 export class ArticlesView extends View {
-    createForm(authorization: RequestAuthorization) {
-        return this.renderFile(this.getTemplateFile("create-article"), { authorization })
+    createForm(authentication: RequestAuthentication) {
+        return this.renderFile(this.getTemplateFile("create-article"), { authentication })
     }
 
-    getAll(authorization: RequestAuthorization, articles: Article[]){
+    articles(authentication: RequestAuthentication, articles: Article[]){
         return this.renderFile(this.getTemplateFile("articles"), {
-            authorization,
+            authentication,
             data: articles.map((article) => ({
                 ...article,
                 tags: article.tags.split(","),
@@ -21,9 +20,9 @@ export class ArticlesView extends View {
         })
     }
 
-    get(authorization: RequestAuthorization, article: Article){
+    article(authentication: RequestAuthentication, article: Article){
         return this.renderFile(this.getTemplateFile("article"), {
-            authorization,
+            authentication,
             data: {
                 ...article,
                 tags: article.tags.split(","),

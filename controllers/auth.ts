@@ -1,4 +1,4 @@
-import { RequestHandler, getFormData } from "./controllers";
+import { RequestHandler, getFormData } from "../app/requests";
 
 import { UserCreate, UserModel } from "../models/user";
 
@@ -9,7 +9,7 @@ type LoginData = {
     password: string;
 }
 
-export class AuthController {
+class AuthController {
     private view = new AuthView();
 
     login: RequestHandler = async (req, res)=> {
@@ -82,3 +82,5 @@ export class AuthController {
         res.end();
     }
 }
+
+export const authController = new AuthController();

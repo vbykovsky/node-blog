@@ -3,7 +3,7 @@ import { Liquid } from "liquidjs";
 
 export class View {
     private engine: Liquid;
-    protected templatesPath = path.resolve(__dirname, "..", "templates");
+    protected templatesPath = path.resolve(__dirname, "..", "views", "templates");
 
     constructor() {
         this.engine = new Liquid()

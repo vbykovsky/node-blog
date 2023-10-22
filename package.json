@@ -1,8 +1,8 @@
 {
   "name": "blog",
   "scripts": {
-    "start": "ts-node ./main.ts",
-    "dev": "ts-node-dev ./main.ts"
+    "start": "ts-node ./app/server.ts",
+    "dev": "ts-node-dev ./app/server.ts"
   },
   "dependencies": {
     "liquidjs": "^10.9.3",

@@ -84,7 +84,7 @@
   <h4 class="mt-8 text-xl text-gray-800 font-bold sm:text-2xl dark:text-white">
     Leave a comment
   </h4>
-  {% if authorization.isAuthorized  %}
+  {% if authentication.isAuthenticated  %}
   <!-- Card -->
   <div class="mt-2 p-4 relative z-10 bg-white border rounded-xl sm:mt-4 md:p-6 dark:bg-gray-800 dark:border-gray-700">
     <form action="/{{ data.id }}/comments" method="POST">

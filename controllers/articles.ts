@@ -6,14 +6,14 @@ import { ArticleCreate, ArticleModel, ArticleAuthorAssociation, Article } from "
 
 import { ArticlesView } from "../views/articles";
 
-import { RequestHandler, getFormData } from "./controllers";
+import { RequestHandler, getFormData } from "../app/requests";
 
-export class ArticlesController {
+class ArticlesController {
     private view = new ArticlesView();
 
     create: RequestHandler = async(req, res) => {
         if(req.method === "POST"){
-            if(!req.authorization.isAuthorized){
+            if(!req.authentication.isAuthenticated){
                 res.statusCode = 401;
                 res.end(this.view.renderError(401));
                 return;
@@ -29,7 +29,7 @@ export class ArticlesController {
     
             const articleResult = await ArticleModel.create({
                 ...data,
-                authorId: req.authorization.user.id,
+                authorId: req.authentication.user.id,
             });
     
             res.writeHead(302, {
@@ -39,7 +39,7 @@ export class ArticlesController {
             return;
         }
 
-        res.end(this.view.createForm(req.authorization));
+        res.end(this.view.createForm(req.authentication));
         return;
     }
 
@@ -57,7 +57,7 @@ export class ArticlesController {
             author: (article.dataValues.author as unknown as Model<User>).dataValues
         }))
 
-        res.end(this.view.getAll(req.authorization, articles));
+        res.end(this.view.articles(req.authentication, articles));
         return;
     }
 
@@ -70,8 +70,7 @@ export class ArticlesController {
             return;
         }
 
-        const articleResult = await ArticleModel.findOne({
-            where: { id: articleId },
+        const articleResult = await ArticleModel.findByPk(articleId, {
             include: ArticleAuthorAssociation,
         });
 
@@ -98,12 +97,12 @@ export class ArticlesController {
             comments: comments,
         });
 
-        res.end(this.view.get(req.authorization, article));
+        res.end(this.view.article(req.authentication, article));
         return;
     }
 
     createComment: RequestHandler = async (req, res) => {
-        if(!req.authorization.isAuthorized){
+        if(!req.authentication.isAuthenticated){
             res.statusCode = 401;
             res.end(this.view.renderError(401));
             return;
@@ -122,7 +121,7 @@ export class ArticlesController {
         await CommentModel.create({
             ...data,
             articleId: +articleId,
-            authorId: req.authorization.user.id,
+            authorId: req.authentication.user.id,
         });
 
         res.writeHead(302, {
@@ -132,3 +131,5 @@ export class ArticlesController {
         return;
     }
 }
+
+export const articlesController = new ArticlesController();

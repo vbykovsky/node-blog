@@ -1,13 +1,12 @@
-import { View } from "./common/view";
+import { View } from "../app/view";
+import { RequestAuthentication } from "../app/requests";
 
 import { User } from "../models/user";
 
-import { RequestAuthorization } from "../controllers/controllers";
-
 export class UsersView extends View {
-    getAll(authorization: RequestAuthorization, users: User[]) {
+    users(authentication: RequestAuthentication, users: User[]) {
         return this.renderFile(this.getTemplateFile("users"), {
-            authorization,
+            authentication,
             data: users,
         });
     }

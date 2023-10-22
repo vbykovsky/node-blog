@@ -1,10 +1,10 @@
+import { RequestHandler } from "../app/requests";
+
 import { UserModel } from "../models/user";
 
 import { UsersView } from "../views/users";
 
-import { RequestHandler } from "./controllers";
-
-export class UsersController {
+class UsersController {
     private view = new UsersView();
 
     getAll: RequestHandler = async (req, res) => {
@@ -12,6 +12,8 @@ export class UsersController {
 
         const users = usersResults.map((user) => user.dataValues);
 
-        res.end(this.view.getAll(req.authorization, users));
+        res.end(this.view.users(req.authentication, users));
     }
 }
+
+export const usersController = new UsersController();

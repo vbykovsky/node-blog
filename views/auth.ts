@@ -1,4 +1,4 @@
-import { View } from "./common/view";
+import { View } from "../app/view";
 
 export class AuthView extends View {
     login() {

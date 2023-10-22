@@ -1,4 +1,5 @@
-import { inMemorySequelize } from "./in-memory/in-memory";
 import { postgresSequelize } from "./postgres/postgres";
+import { inMemorySequelize } from "./in-memory/in-memory";
+import { filesystemSequelize } from "./filesystem/filesystem";
 
-export const sequelizeInstance = postgresSequelize;
+export const sequelizeInstance = filesystemSequelize;
