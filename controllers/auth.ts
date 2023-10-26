@@ -16,12 +16,11 @@ class AuthController {
     private view = new AuthView();
     private service = new AuthService();
 
-    login: RequestHandler = async (req, res) => {
-        if(req.method !== "POST"){
-            res.end(this.view.login());
-            return;
-        }
+    loginForm: RequestHandler = async (req, res) => {
+        res.end(this.view.login());
+    }
 
+    login: RequestHandler = async (req, res) => {
         try {
             const data = await getFormData<LoginData>(req);
 
@@ -52,12 +51,11 @@ class AuthController {
         }
     }
 
-    register: RequestHandler = async (req, res) => {
-        if(req.method !== "POST"){
-            res.end(this.view.registration());
-            return;
-        }
+    registerForm: RequestHandler = async (req, res) => {
+        res.end(this.view.registration());
+    }
 
+    register: RequestHandler = async (req, res) => {
         try {
             const data = await getFormData<UserCreate>(req);
 

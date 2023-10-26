@@ -4,13 +4,17 @@ import { UsersDataSource } from "../data-sources/user";
 
 import { User } from "../models/user";
 
-export type RequestAuthentication =  {
-    isAuthenticated: false;
-    user?: undefined;
-} | {
+export type RequestAuthenticated = {
     isAuthenticated: true;
     user: User;
 };
+
+export type RequestNotAuthenticated = {
+    isAuthenticated: false;
+    user?: undefined;
+};
+
+export type RequestAuthentication = RequestNotAuthenticated | RequestAuthenticated;
 
 export type Request = IncomingMessage & {
     authentication: RequestAuthentication;
@@ -18,9 +22,15 @@ export type Request = IncomingMessage & {
     query: Record<string, string>;
 }
 
+export type AuthenticatedRequest = Omit<Request, "authentication"> & {
+    authentication: RequestAuthenticated;
+}
+
 export type RequestHandler = (req: Request, res: ServerResponse) => void | Promise<void>;
 
-export const getQuery = (req: IncomingMessage): Record<string, string> => {
+export type RequestAuthenticatedHandler = (req: AuthenticatedRequest, res: ServerResponse) => void | Promise<void>;
+
+export const parseQuery = (req: IncomingMessage): Record<string, string> => {
     return req.url ? Object.fromEntries(req.url.split("?").map((query) => query.split("="))) : {};
 }
 

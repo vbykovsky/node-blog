@@ -1,4 +1,4 @@
-import { RequestHandler, getFormData } from "../app/requests";
+import { RequestAuthenticatedHandler, RequestHandler, getFormData } from "../app/requests";
 import { BadRequestError, NotFoundError, RequestError, UnauthorizedError } from "../app/errors";
 
 import { ArticlesService } from "../services/articles";
@@ -12,17 +12,12 @@ class ArticlesController {
     private view = new ArticlesView();
     private service = new ArticlesService();
 
-    create: RequestHandler = async(req, res) => {
-        if(req.method !== "POST"){
-            res.end(this.view.createForm(req.authentication));
-            return;
-        }
+    createForm: RequestHandler = async (req, res) => {
+        res.end(this.view.createForm(req.authentication));
+    }
 
+    create: RequestAuthenticatedHandler = async (req, res) => {
         try{
-            if(!req.authentication.isAuthenticated){
-                throw new UnauthorizedError();
-            }
-
             const data = await getFormData<ArticleCreate>(req);
 
             if(!data.content || !data.tags || !data.title) {
@@ -32,9 +27,7 @@ class ArticlesController {
             const article = await this.service.create(req.authentication.user, data);
     
             res
-                .writeHead(302, {
-                    Location: `/${article.id}`
-                })
+                .writeHead(302, { Location: `/${article.id}`})
                 .end();
         }
         catch(error){
@@ -85,12 +78,36 @@ class ArticlesController {
         }
     }
 
-    createComment: RequestHandler = async (req, res) => {
+    delete: RequestAuthenticatedHandler = async (req, res) => {
         try{
-            if(!req.authentication.isAuthenticated){
-                throw new UnauthorizedError();
+            const { articleId } = req.params;
+    
+            if((+articleId).toString() !== articleId){
+                throw new NotFoundError();
             }
     
+            await this.service.delete(req.authentication.user, +articleId);
+    
+            res
+                .writeHead(302, { Location: "/" })
+                .end();
+        }
+        catch(error){
+            if(error instanceof RequestError){
+                res.statusCode = error.status;
+                res.end(this.view.renderError(req.authentication, error.status, error.message));
+                return;
+            }
+
+            if (error instanceof Error){
+                res.statusCode = 500;
+                res.end(this.view.renderError(req.authentication, 500, error.message));
+            }
+        }
+    }
+
+    createComment: RequestAuthenticatedHandler = async (req, res) => {
+        try{
             const { articleId } = req.params;
     
             if((+articleId).toString() !== articleId){
@@ -109,6 +126,38 @@ class ArticlesController {
                 .writeHead(302, {
                     Location: `/${articleId}`
                 })
+                .end();
+        }
+        catch(error){
+            if(error instanceof RequestError){
+                res.statusCode = error.status;
+                res.end(this.view.renderError(req.authentication, error.status, error.message));
+                return;
+            }
+
+            if (error instanceof Error){
+                res.statusCode = 500;
+                res.end(this.view.renderError(req.authentication, 500, error.message));
+            }
+        }
+    }
+
+    deleteComment: RequestAuthenticatedHandler = async (req, res) => {
+        try{
+            const { articleId, commentId } = req.params;
+    
+            if((+articleId).toString() !== articleId){
+                throw new NotFoundError();
+            }
+    
+            if((+commentId).toString() !== commentId){
+                throw new NotFoundError();
+            }
+    
+            await this.service.deleteComment(req.authentication.user, +commentId);
+    
+            res
+                .writeHead(302, { Location: `/${articleId}` })
                 .end();
         }
         catch(error){

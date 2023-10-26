@@ -1,6 +1,6 @@
 import { Op } from "sequelize";
 
-import { NotFoundError } from "../app/errors";
+import { BadRequestError, NotFoundError } from "../app/errors";
 
 import { ArticlesDataSource } from "../data-sources/article";
 import { CommentsDataSource } from "../data-sources/comment";
@@ -62,11 +62,39 @@ export class ArticlesService {
         return article;
     }
 
+    delete = async (user: User, articleId: number) => {
+        const articleResult = await this.articlesDataSource.findById(articleId);
+
+        if(!articleResult){
+            throw new NotFoundError();
+        }
+
+        if(articleResult.dataValues.authorId !== user.id){
+            throw new BadRequestError("Only author of article can delete it");
+        }
+
+        await articleResult.destroy();
+    }
+
     createComment = async (user: User, articleId: number, data: CommentCreate) => {
         return this.commentsDataSource.create({
             ...data,
             authorId: user.id,
             articleId: +articleId,
         })
+    }
+
+    deleteComment = async (user: User, commentId: number) => {
+        const commentResult = await this.commentsDataSource.findById(commentId);
+
+        if(!commentResult){
+            throw new NotFoundError();
+        }
+
+        if(commentResult.dataValues.authorId !== user.id){
+            throw new BadRequestError("Only author of comment can delete it");
+        }
+
+        await commentResult.destroy();
     }
 }

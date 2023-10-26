@@ -8,6 +8,7 @@ interface CommentsRepository {
     create(createData: CommentCreate): Promise<CommentModel>;
 
     findAll(options?: FindOptions<Attributes<CommentModel>>): Promise<CommentModel[]>;
+    findById(id: number): Promise<CommentModel | null>;
 }
 
 export class CommentsDataSource implements CommentsRepository {
@@ -55,6 +56,10 @@ export class CommentsDataSource implements CommentsRepository {
         return this.model.findAll({
             ...options,
             include: this.commentAuthorAssociation,
-        })
+        });
+    }
+
+    findById(id: number): Promise<CommentModel | null> {
+        return this.model.findByPk(id);
     }
 }

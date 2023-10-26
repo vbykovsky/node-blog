@@ -3,8 +3,8 @@ import http from "http";
 import { appController } from "../controllers/app";
 import { sequelizeInstance } from "../data-sources/sources/source";
 
-import { routes } from "./routes";
-import { Request, getAuthentication, getQuery } from "./requests";
+import { RequestMethod, routes } from "./routes";
+import { AuthenticatedRequest, Request, getAuthentication, parseQuery } from "./requests";
 
 (async () => {
     await sequelizeInstance.sync();
@@ -17,12 +17,12 @@ import { Request, getAuthentication, getQuery } from "./requests";
         const authentication = await getAuthentication(req);
 
         req["params"] = {};
-        req["query"] =  getQuery(_req);
+        req["query"] =  parseQuery(_req);
         req["authentication"] = authentication;
 
         if(req.url){
             for(const route of routes){
-                const { urlPattern, handler } = route;
+                const { urlPattern, methods = ["GET"], requireAuth = false, handler } = route;
 
                 const matchers = urlPattern.match(req.url);
 
@@ -31,14 +31,19 @@ import { Request, getAuthentication, getQuery } from "./requests";
                     ...matchers,
                 }
 
-                if(matchers){
-                    await handler(req, res);
+                if(matchers && methods.includes(req.method as RequestMethod)){
+                    if(requireAuth && !req.authentication.isAuthenticated){
+                        appController.page401(req, res);
+                        return;
+                    }
+
+                    await handler(req as AuthenticatedRequest, res);
                     return;
                 }
             }
         }
 
-        res.end(appController.page404(req, res));
+        appController.page404(req, res);
     });
 
     server.listen(8000);
