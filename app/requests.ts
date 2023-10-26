@@ -3,6 +3,7 @@ import { IncomingMessage, ServerResponse } from "http";
 import { UsersDataSource } from "../data-sources/user";
 
 import { User } from "../models/user";
+import { AuthService } from "../services/auth";
 
 export type RequestAuthenticated = {
     isAuthenticated: true;
@@ -48,26 +49,20 @@ export const getAuthentication = async (req: IncomingMessage): Promise<RequestAu
         }
     }
 
-    const userId = blogAuth.split(":")[1];
-    if(!userId){
+    try{
+        const tokenUser = new AuthService().getAuthTokenData(blogAuth);
+    
+        return {
+            isAuthenticated: true,
+            user: tokenUser,
+        }
+    }
+    catch(error){
         return {
             isAuthenticated: false,
         }
     }
 
-    const userResult = await new UsersDataSource().findById(userId, {
-        attributes: ["id", "username", "avatar", "displayName"],
-    });
-    if(!userResult){
-        return {
-            isAuthenticated: false,
-        }
-    }
-
-    return {
-        isAuthenticated: true,
-        user: userResult.dataValues,
-    }
 }
 
 export const getFormData = <T extends object>(req: Request) => new Promise<T>((resolve) => {

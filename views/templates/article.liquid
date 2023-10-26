@@ -7,7 +7,7 @@
     <div class="flex justify-between items-center mb-6">
       <div class="flex w-full sm:items-center gap-x-5 sm:gap-x-3">
         <div class="flex-shrink-0">
-          <img class="h-12 w-12 rounded-full" src="{{ data.author.avatar }}" alt="Image Description">
+          <img class="h-16 w-16 rounded-full" src="{{ data.author.avatar }}" alt="Image Description">
         </div>
 
         <div class="grow flex justify-between items-center">
@@ -62,9 +62,9 @@
   <!-- Comments -->
   <h4 class=" mt-8 text-xl font-bold md:text-2xl dark:text-white">Comments</h4>
   {% for comment in data.comments %}
-    <div class="flex flex-col mt-6 rounded-xl p-4 md:p-6 bg-white border border-gray-200 dark:bg-slate-900 dark:border-gray-700">
+    <div class="flex flex-col mt-6 rounded-xl p-4 bg-white border border-gray-200 dark:bg-slate-900 dark:border-gray-700">
       <div class="flex items-center gap-x-4">
-        <img class="rounded-full w-20 h-20" src="{{ comment.author.avatar }}" alt="Image Description">
+        <img class="rounded-full h-12 w-12" src="{{ comment.author.avatar }}" alt="Image Description">
         <div class="grow flex justify-between items-center">
           <div>
             <h3 class="font-medium text-gray-800 dark:text-gray-200">
