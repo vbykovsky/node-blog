@@ -5,17 +5,17 @@
     "dev": "ts-node-dev ./app/server.ts"
   },
   "dependencies": {
-    "@types/bcrypt": "^5.0.1",
-    "@types/jsonwebtoken": "^9.0.4",
-    "bcrypt": "^5.1.1",
-    "jsonwebtoken": "^9.0.2",
-    "liquidjs": "^10.9.3",
-    "pg": "^8.11.3",
-    "sequelize": "^6.33.0",
-    "sqlite3": "^5.1.6",
-    "ts-node": "^10.9.1",
-    "ts-node-dev": "^2.0.0",
-    "typescript": "^5.2.2",
-    "url-pattern": "^1.0.3"
+    "@types/bcrypt": "5.0.1",
+    "@types/jsonwebtoken": "9.0.4",
+    "bcrypt": "5.1.1",
+    "jsonwebtoken": "9.0.2",
+    "liquidjs": "10.9.3",
+    "pg": "8.11.3",
+    "sequelize": "6.33.0",
+    "sqlite3": "5.1.6",
+    "ts-node": "10.9.1",
+    "ts-node-dev": "2.0.0",
+    "typescript": "5.2.2",
+    "url-pattern": "1.0.3"
   }
 }
