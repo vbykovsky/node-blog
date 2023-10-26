@@ -1,0 +1,46 @@
+{% layout "./page.liquid" %}
+{% block content %}
+<!-- Comment Form -->
+<div class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
+  <div class="mx-auto max-w-2xl">
+    <div class="text-center">
+      <h2 class="text-xl text-gray-800 font-bold sm:text-3xl dark:text-white">
+        {{ title }}
+      </h2>
+    </div>
+
+    <form class="mt-8" action="{{ action }}" method="POST">
+    <div class="mb-4 sm:mb-8">
+        <label for="hs-article-title" class="block mb-2 text-sm font-medium dark:text-white">Title</label>
+        <input type="text" id="hs-article-title" name="title" class="py-3 px-4 block w-full border border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 sm:p-2 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400" placeholder="Enter title" value="{{ data.defaultValues.title  }}">
+    </div>
+
+    <div class="mb-4 sm:mb-8">
+        <label for="hs-article-tags" class="block mb-2 text-sm font-medium dark:text-white">Tags</label>
+        <input type="text" id="hs-article-tags" name="tags" class="py-3 px-4 block w-full border border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 sm:p-2 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400" placeholder="Enter tags delivered by comma" value="{{ data.defaultValues.tags  }}">
+    </div>
+
+    <div class="mb-4 sm:mb-8">
+        <label for="hs-article-content" class="block mb-2 text-sm font-medium dark:text-white">Content</label>
+        <div class="mt-1">
+        <textarea id="hs-article-content" name="content" rows="4" class="py-3 px-4 block w-full border border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 sm:p-2 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400" placeholder="Enter content...">{{ data.defaultValues.content  }}</textarea>
+        </div>
+    </div>
+
+    <div>
+        <label for="hs-article-previewText" class="block mb-2 text-sm font-medium dark:text-white">Preview text</label>
+        <div class="mt-1">
+        <textarea id="hs-article-previewText" name="previewText" rows="2" class="py-3 px-4 block w-full border border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 sm:p-2 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400" placeholder="Enter preview text...">{{ data.defaultValues.previewText  }}</textarea>
+        </div>
+    </div>
+
+    <div class="mt-6 grid">
+        <button type="submit" class="py-2 px-3 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all dark:focus:ring-offset-gray-800">
+          {{ submitText }}
+        </button>
+    </div>
+    </form>
+  </div>
+</div>
+<!-- End Comment Form -->
+{% endblock %}

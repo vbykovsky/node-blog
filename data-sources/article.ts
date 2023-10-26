@@ -17,6 +17,7 @@ export class ArticlesDataSource implements ArticlesRepository {
     private model = sequelizeInstance.define<ArticleModel, ArticleAttributes>("article", {
         title: DataTypes.STRING,
         content: DataTypes.TEXT,
+        previewText: DataTypes.TEXT,
         
         tags: DataTypes.STRING,
     

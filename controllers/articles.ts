@@ -7,12 +7,13 @@ import { ArticlesView } from "../views/articles";
 
 import { CreateArticleDTO } from "../dtos/CreateArticleDTO";
 import { CreateCommentDTO } from "../dtos/CreateCommentDTO";
+import { UpdateArticleDTO } from "../dtos/UpdateArticleDTO";
 
 class ArticlesController {
     private view = new ArticlesView();
     private service = new ArticlesService();
 
-    createForm: RequestHandler = async (req, res) => {
+    createForm: RequestAuthenticatedHandler = async (req, res) => {
         res.end(this.view.createForm(req.authentication));
     }
 
@@ -63,6 +64,68 @@ class ArticlesController {
             const article = await this.service.getById(+articleId);
     
             res.end(this.view.article(req.authentication, article));
+        }
+        catch(error){
+            if(error instanceof RequestError){
+                res.statusCode = error.status;
+                res.end(this.view.renderError(req.authentication, error.status, error.message));
+                return;
+            }
+
+            if (error instanceof Error){
+                res.statusCode = 500;
+                res.end(this.view.renderError(req.authentication, 500, error.message));
+            }
+        }
+    }
+
+    updateForm: RequestAuthenticatedHandler = async (req, res) => {
+        try{
+            const { articleId } = req.params;
+    
+            if((+articleId).toString() !== articleId){
+                throw new NotFoundError();
+            }
+    
+            const article = await this.service.getById(+articleId);
+    
+            res.end(this.view.updateForm(req.authentication, article.id, article));
+        }
+        catch(error){
+            if(error instanceof RequestError){
+                res.statusCode = error.status;
+                res.end(this.view.renderError(req.authentication, error.status, error.message));
+                return;
+            }
+
+            if (error instanceof Error){
+                res.statusCode = 500;
+                res.end(this.view.renderError(req.authentication, 500, error.message));
+            }
+        }
+    }
+
+    update: RequestAuthenticatedHandler = async (req, res) => {
+        try{
+            const { articleId } = req.params;
+    
+            if((+articleId).toString() !== articleId){
+                throw new NotFoundError();
+            }
+    
+            const article = await this.service.getById(+articleId);
+
+            if(article.author.id !== req.authentication.user.id){
+                throw new BadRequestError("Only author of article can update it");
+            }
+
+            const updateDto = await getFormData<UpdateArticleDTO>(req);
+
+            await this.service.update(+articleId, updateDto);
+
+            res
+                .writeHead(302, { Location: `/${articleId}` })
+                .end();
         }
         catch(error){
             if(error instanceof RequestError){

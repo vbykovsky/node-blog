@@ -10,6 +10,7 @@ export interface Article {
     tags: string;
 
     content: string;
+    previewText: string;
 
     authorId: number;
     author: User;

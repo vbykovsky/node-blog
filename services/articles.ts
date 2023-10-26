@@ -5,11 +5,12 @@ import { BadRequestError, NotFoundError } from "../app/errors";
 import { ArticlesDataSource } from "../data-sources/article";
 import { CommentsDataSource } from "../data-sources/comment";
 
+import { User } from "../models/user";
 import { Article } from "../models/article";
-import { User, UserModel } from "../models/user";
 
 import { CreateArticleDTO } from "../dtos/CreateArticleDTO";
 import { CreateCommentDTO } from "../dtos/CreateCommentDTO";
+import { UpdateArticleDTO } from "../dtos/UpdateArticleDTO";
 
 export class ArticlesService {
     private articlesDataSource = new ArticlesDataSource();
@@ -62,6 +63,23 @@ export class ArticlesService {
         });
 
         return article;
+    }
+
+    update = async (articleId: number, updateDto: UpdateArticleDTO) => {
+        const articleResult = await this.articlesDataSource.findById(articleId);
+
+        if(!articleResult){
+            throw new NotFoundError();
+        }
+
+        articleResult.set("title", updateDto.title);
+        articleResult.set("tags", updateDto.tags);
+        articleResult.set("content", updateDto.content);
+        articleResult.set("previewText", updateDto.previewText);
+
+        await articleResult.save();
+
+        return articleResult.dataValues;
     }
 
     delete = async (user: User, articleId: number) => {

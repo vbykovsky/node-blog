@@ -78,6 +78,18 @@ export const routes: Route[] = [
         handler: articlesController.createComment,
     },
     {
+        urlPattern: new UrlPattern("/:articleId/update"),
+        methods: ["GET"],
+        requireAuth: true,
+        handler: articlesController.updateForm,
+    },
+    {
+        urlPattern: new UrlPattern("/:articleId/update"),
+        methods: ["POST"],
+        requireAuth: true,
+        handler: articlesController.update,
+    },
+    {
         urlPattern: new UrlPattern("/:articleId/delete"),
         methods: ["POST"],
         requireAuth: true,
