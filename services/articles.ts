@@ -5,17 +5,19 @@ import { BadRequestError, NotFoundError } from "../app/errors";
 import { ArticlesDataSource } from "../data-sources/article";
 import { CommentsDataSource } from "../data-sources/comment";
 
+import { Article } from "../models/article";
 import { User, UserModel } from "../models/user";
-import { Article, ArticleCreate } from "../models/article";
-import { CommentCreate } from "../models/comment";
+
+import { CreateArticleDTO } from "../dtos/CreateArticleDTO";
+import { CreateCommentDTO } from "../dtos/CreateCommentDTO";
 
 export class ArticlesService {
     private articlesDataSource = new ArticlesDataSource();
     private commentsDataSource = new CommentsDataSource();
 
-    create = async (user: User, data: ArticleCreate) => {
+    create = async (user: User, createArticleDto: CreateArticleDTO) => {
         const articleResult = await this.articlesDataSource.create({
-            ...data,
+            ...createArticleDto,
             authorId: user.id,
         });
 
@@ -76,9 +78,9 @@ export class ArticlesService {
         await articleResult.destroy();
     }
 
-    createComment = async (user: User, articleId: number, data: CommentCreate) => {
+    createComment = async (user: User, articleId: number, createCommentDto: CreateCommentDTO) => {
         return this.commentsDataSource.create({
-            ...data,
+            ...createCommentDto,
             authorId: user.id,
             articleId: +articleId,
         })

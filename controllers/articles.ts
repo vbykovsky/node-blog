@@ -1,12 +1,12 @@
+import { BadRequestError, NotFoundError, RequestError } from "../app/errors";
 import { RequestAuthenticatedHandler, RequestHandler, getFormData } from "../app/requests";
-import { BadRequestError, NotFoundError, RequestError, UnauthorizedError } from "../app/errors";
 
 import { ArticlesService } from "../services/articles";
 
 import { ArticlesView } from "../views/articles";
 
-import { ArticleCreate } from "../models/article";
-import { CommentCreate } from "../models/comment";
+import { CreateArticleDTO } from "../dtos/CreateArticleDTO";
+import { CreateCommentDTO } from "../dtos/CreateCommentDTO";
 
 class ArticlesController {
     private view = new ArticlesView();
@@ -18,13 +18,13 @@ class ArticlesController {
 
     create: RequestAuthenticatedHandler = async (req, res) => {
         try{
-            const data = await getFormData<ArticleCreate>(req);
+            const createArticleDto = await getFormData<CreateArticleDTO>(req);
 
-            if(!data.content || !data.tags || !data.title) {
+            if(!createArticleDto.content || !createArticleDto.tags || !createArticleDto.title) {
                 throw new BadRequestError("Invalid request data");
             }
     
-            const article = await this.service.create(req.authentication.user, data);
+            const article = await this.service.create(req.authentication.user, createArticleDto);
     
             res
                 .writeHead(302, { Location: `/${article.id}`})
@@ -114,18 +114,16 @@ class ArticlesController {
                 throw new NotFoundError();
             }
     
-            const data = await getFormData<CommentCreate>(req);
+            const createCommentDto = await getFormData<CreateCommentDTO>(req);
     
-            if(!data.text){
+            if(!createCommentDto.text){
                 throw new BadRequestError("Invalid request data");
             }
     
-            await this.service.createComment(req.authentication.user, +articleId, data);
+            await this.service.createComment(req.authentication.user, +articleId, createCommentDto);
     
             res
-                .writeHead(302, {
-                    Location: `/${articleId}`
-                })
+                .writeHead(302, { Location: `/${articleId}` })
                 .end();
         }
         catch(error){

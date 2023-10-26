@@ -2,19 +2,20 @@ import { BadRequestError } from "../app/errors";
 
 import { UsersDataSource } from "../data-sources/user";
 
-import { UserCreate } from "../models/user";
+import { LoginDTO } from "../dtos/LoginDTO";
+import { RegisterDTO } from "../dtos/RegisterDTO";
 
 export class AuthService {
     private dataSource = new UsersDataSource();
 
-    register = async (registerUser: UserCreate) => {
-        const checkExistUser = await this.dataSource.findByUsername(registerUser.username);
+    register = async (registerDto: RegisterDTO) => {
+        const checkExistUser = await this.dataSource.findByUsername(registerDto.username);
 
         if(checkExistUser){
             throw new BadRequestError("User with provided username already exists");
         }
 
-        const userResult = await this.dataSource.create(registerUser);
+        const userResult = await this.dataSource.create(registerDto);
 
         const user = userResult.dataValues;
 
@@ -24,14 +25,14 @@ export class AuthService {
         };
     }
 
-    login = async (username: string, password: string) => {
-        const userResult = await this.dataSource.findByUsername(username);
+    login = async (loginDto: LoginDTO) => {
+        const userResult = await this.dataSource.findByUsername(loginDto.username);
 
         if(!userResult){
             throw new BadRequestError("User with provided username/password was not found");
         }
 
-        if(userResult.dataValues.password !== password){
+        if(userResult.dataValues.password !== loginDto.password){
             throw new BadRequestError("User with provided username/password was not found");
         }
 

@@ -5,12 +5,8 @@ import { AuthService } from "../services/auth";
 
 import { AuthView } from "../views/auth";
 
-import { UserCreate } from "../models/user";
-
-type LoginData = {
-    username: string;
-    password: string;
-}
+import { LoginDTO } from "../dtos/LoginDTO";
+import { RegisterDTO } from "../dtos/RegisterDTO";
 
 class AuthController {
     private view = new AuthView();
@@ -22,19 +18,16 @@ class AuthController {
 
     login: RequestHandler = async (req, res) => {
         try {
-            const data = await getFormData<LoginData>(req);
+            const loginDto = await getFormData<LoginDTO>(req);
 
-            if(!data.username || !data.password){
+            if(!loginDto.username || !loginDto.password){
                 throw new BadRequestError("Invalid request data");
             }
 
-            const { sessionCookie } = await this.service.login(data.username, data.password);
+            const { sessionCookie } = await this.service.login(loginDto);
 
             res
-                .writeHead(302, {
-                    "set-cookie": sessionCookie,
-                    Location: "/",
-                })
+                .writeHead(302, { Location: "/", "set-cookie": sessionCookie })
                 .end();
         }
         catch(error){
@@ -57,19 +50,16 @@ class AuthController {
 
     register: RequestHandler = async (req, res) => {
         try {
-            const data = await getFormData<UserCreate>(req);
+            const registerDto = await getFormData<RegisterDTO>(req);
 
-            if(!data.username || !data.password){
+            if(!registerDto.username || !registerDto.password){
                 throw new BadRequestError("Invalid request data");
             }
 
-            const { sessionCookie } = await this.service.register(data);
+            const { sessionCookie } = await this.service.register(registerDto);
 
             res
-                .writeHead(302, {
-                    "set-cookie": sessionCookie,
-                    Location: "/",
-                })
+                .writeHead(302, { Location: "/", "set-cookie": sessionCookie })
                 .end();
         }
         catch(error){
@@ -88,10 +78,7 @@ class AuthController {
 
     logout: RequestHandler = async (req, res) => {
         res
-            .writeHead(302, {
-                "set-cookie": `blogAuth=`,
-                Location: "/",
-            })
+            .writeHead(302, { Location: "/", "set-cookie": `blogAuth=` })
             .end();
     }
 }
