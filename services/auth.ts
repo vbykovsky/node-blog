@@ -23,12 +23,13 @@ export class AuthService {
         return bcrypt.compareSync(value, hashedValue);
     }
 
-    private generateAuthToken = (user: User) => {
+    private generateAuthToken = (user: Omit<User, "password">) => {
         return jwt.sign(user, AuthService.JWT_SECRET, { expiresIn: AuthService.JWT_EXPIRES_SECONDS });
     }
 
     private getAuthCookie = (user: User) => {
-        return `blogAuth=${this.generateAuthToken(user)}`;
+        const { password, ...userData } = user;
+        return `blogAuth=${this.generateAuthToken(userData)}`;
     }
 
     getAuthTokenData = (token: string) => {
