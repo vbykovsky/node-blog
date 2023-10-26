@@ -7,7 +7,7 @@ class AppController {
 
     page404: RequestHandler = async (req, res) => {
         res.statusCode = 404;
-        res.end(this.view.renderError(404));
+        res.end(this.view.renderError(req.authentication, 404));
     }
 }
 

@@ -1,6 +1,8 @@
 import { IncomingMessage, ServerResponse } from "http";
 
-import { User, UserModel } from "../models/user";
+import { UsersDataSource } from "../data-sources/user";
+
+import { User } from "../models/user";
 
 export type RequestAuthentication =  {
     isAuthenticated: false;
@@ -43,7 +45,9 @@ export const getAuthentication = async (req: IncomingMessage): Promise<RequestAu
         }
     }
 
-    const userResult = await UserModel.findByPk(userId, {attributes: ["id", "username", "avatar", "displayName"]});
+    const userResult = await new UsersDataSource().findById(userId, {
+        attributes: ["id", "username", "avatar", "displayName"],
+    });
     if(!userResult){
         return {
             isAuthenticated: false,

@@ -1,8 +1,11 @@
 import { RequestHandler, getFormData } from "../app/requests";
+import { BadRequestError, RequestError } from "../app/errors";
 
-import { UserCreate, UserModel } from "../models/user";
+import { AuthService } from "../services/auth";
 
 import { AuthView } from "../views/auth";
+
+import { UserCreate } from "../models/user";
 
 type LoginData = {
     username: string;
@@ -11,75 +14,87 @@ type LoginData = {
 
 class AuthController {
     private view = new AuthView();
+    private service = new AuthService();
 
-    login: RequestHandler = async (req, res)=> {
-        if(req.method === "POST"){
+    login: RequestHandler = async (req, res) => {
+        if(req.method !== "POST"){
+            res.end(this.view.login());
+            return;
+        }
+
+        try {
             const data = await getFormData<LoginData>(req);
 
             if(!data.username || !data.password){
-                res.statusCode = 400;
-                res.end(this.view.renderError(400));
+                throw new BadRequestError("Invalid request data");
+            }
+
+            const { sessionCookie } = await this.service.login(data.username, data.password);
+
+            res
+                .writeHead(302, {
+                    "set-cookie": sessionCookie,
+                    Location: "/",
+                })
+                .end();
+        }
+        catch(error){
+            if(error instanceof RequestError){
+                res.statusCode = error.status;
+                res.end(this.view.renderError(req.authentication, error.status, error.message));
                 return;
             }
 
-            const user = await UserModel.findOne({ where: { username:data.username, password: data.password } });
-
-            if(!user){
-                res.statusCode = 400;
-                res.end(this.view.renderError(400));
-                return;
+            if (error instanceof Error){
+                res.statusCode = 500;
+                res.end(this.view.renderError(req.authentication, 500, error.message));
             }
+        }
+    }
 
-            res.writeHead(302, {
-                "set-cookie": `blogAuth=user:${user.dataValues.id}`,
-                Location: "/",
-            });
-            res.end();
-
+    register: RequestHandler = async (req, res) => {
+        if(req.method !== "POST"){
+            res.end(this.view.registration());
             return;
         }
 
-        res.end(this.view.login());
-        return ;
-    }
-
-    register: RequestHandler = async (req, res)=> {
-        if(req.method === "POST"){
+        try {
             const data = await getFormData<UserCreate>(req);
 
             if(!data.username || !data.password){
-                res.statusCode = 400;
-                res.end(this.view.renderError(400));
-                return;
+                throw new BadRequestError("Invalid request data");
             }
 
-            const user = await UserModel.create(data);
+            const { sessionCookie } = await this.service.register(data);
 
-            if(!user){
-                res.statusCode = 400;
-                res.end(this.view.renderError(400));
-                return;
-            }
-
-            res.writeHead(302, {
-                "set-cookie": `blogAuth=user:${user.dataValues.id}`,
-                Location: "/",
-            });
-            res.end();
-
-            return;
+            res
+                .writeHead(302, {
+                    "set-cookie": sessionCookie,
+                    Location: "/",
+                })
+                .end();
         }
+        catch(error){
+            if(error instanceof RequestError){
+                res.statusCode = error.status;
+                res.end(this.view.renderError(req.authentication, error.status, error.message));
+                return;
+            }
 
-        res.end(this.view.registration());
-        return ;
+            if (error instanceof Error){
+                res.statusCode = 500;
+                res.end(this.view.renderError(req.authentication, 500, error.message));
+            }
+        }
     }
 
     logout: RequestHandler = async (req, res) => {
-        res.writeHead(302, {
-            "set-cookie": `blogAuth=`,
-            Location: "/",
-        });
-        res.end();
+        res
+            .writeHead(302, {
+                "set-cookie": `blogAuth=`,
+                Location: "/",
+            })
+            .end();
     }
 }
 

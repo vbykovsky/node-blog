@@ -1,5 +1,6 @@
 import path from "path";
 import { Liquid } from "liquidjs";
+import { RequestAuthentication } from "./requests";
 
 export class View {
     private engine: Liquid;
@@ -23,7 +24,7 @@ export class View {
         return this.engine.renderFileSync(filePath, vars);
     }
 
-    renderError(error: number){
-        return this.engine.renderFileSync(this.getTemplateFile(error.toString()));
+    renderError(authentication: RequestAuthentication, error: number, message?: string){
+        return this.engine.renderFileSync(this.getTemplateFile(error.toString()), { authentication, message });
     }
 };

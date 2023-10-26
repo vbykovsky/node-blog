@@ -1,6 +1,4 @@
-import { DataTypes, Model } from "sequelize";
-
-import { sequelizeInstance } from "../data-sources";
+import { Model } from "sequelize";
 
 export interface User {
     id: number;
@@ -13,14 +11,6 @@ export interface User {
 }
 
 export type UserCreate = Omit<User, "id">;
-export type UserAttributes = Omit<User, "id">
+export type UserAttributes = Omit<User, "id">;
 
-export const UserModel = sequelizeInstance.define<Model<User,UserCreate>, UserAttributes>("user", {
-    username: DataTypes.STRING,
-    password: DataTypes.STRING,
-    
-    avatar: DataTypes.STRING,
-    displayName: DataTypes.STRING,
-}, {
-    tableName: "users",
-})
+export type UserModel = Model<User, UserCreate>;

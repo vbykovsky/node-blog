@@ -1,7 +1,7 @@
 import http from "http";
 
 import { appController } from "../controllers/app";
-import { sequelizeInstance } from "../data-sources";
+import { sequelizeInstance } from "../data-sources/sources/source";
 
 import { routes } from "./routes";
 import { Request, getAuthentication, getQuery } from "./requests";

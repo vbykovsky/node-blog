@@ -1,16 +1,15 @@
 import { RequestHandler } from "../app/requests";
 
-import { UserModel } from "../models/user";
+import { UsersService } from "../services/users";
 
 import { UsersView } from "../views/users";
 
 class UsersController {
     private view = new UsersView();
+    private service = new UsersService();
 
     getAll: RequestHandler = async (req, res) => {
-        const usersResults = await UserModel.findAll();
-
-        const users = usersResults.map((user) => user.dataValues);
+        const users = await this.service.getAll();
 
         res.end(this.view.users(req.authentication, users));
     }
