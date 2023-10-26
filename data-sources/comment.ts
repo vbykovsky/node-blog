@@ -1,13 +1,13 @@
-import { Attributes, DataTypes, FindOptions } from "sequelize";
+import { Attributes, DataTypes, FindOptions, ModelStatic } from "sequelize";
 
 import { sequelizeInstance } from "./sources/source";
 
-import { CommentAttributes, CommentCreate, CommentModel } from "../models/comment";
+import { CommentAttributes, CommentCreate, CommentModel, CommentModelWithIncludedAuthor } from "../models/comment";
 
 interface CommentsRepository {
     create(createData: CommentCreate): Promise<CommentModel>;
 
-    findAll(options?: FindOptions<Attributes<CommentModel>>): Promise<CommentModel[]>;
+    findAll(options?: FindOptions<Attributes<CommentModelWithIncludedAuthor>>): Promise<CommentModelWithIncludedAuthor[]>;
     findById(id: number): Promise<CommentModel | null>;
 }
 
@@ -52,8 +52,8 @@ export class CommentsDataSource implements CommentsRepository {
         return this.model.create(createData);
     }
 
-    findAll(options?: FindOptions<Attributes<CommentModel>>): Promise<CommentModel[]> {
-        return this.model.findAll({
+    findAll(options?: FindOptions<Attributes<CommentModelWithIncludedAuthor>>): Promise<CommentModelWithIncludedAuthor[]> {
+        return (this.model as unknown as ModelStatic<CommentModelWithIncludedAuthor>).findAll({
             ...options,
             include: this.commentAuthorAssociation,
         });

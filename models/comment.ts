@@ -1,6 +1,6 @@
 import { Model } from "sequelize";
 
-import { User } from "./user";
+import { User, UserModel } from "./user";
 
 export interface Comment {
     id: number;
@@ -20,3 +20,4 @@ export type CommentCreate = Omit<Comment, "id" | "author" | "createdAt" | "updat
 export type CommentAttributes = Omit<Comment, "id" | "author" | "createdAt" | "updatedAt">
 
 export type CommentModel = Model<Comment, CommentCreate>;
+export type CommentModelWithIncludedAuthor = Model<Omit<Comment, "author"> & { author: UserModel }, CommentCreate>;

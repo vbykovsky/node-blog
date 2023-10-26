@@ -32,7 +32,7 @@ export class ArticlesService {
 
         const articles = articlesResults.map((article) => ({
             ...article.dataValues,
-            author: (article.dataValues.author as unknown as UserModel).dataValues
+            author: article.dataValues.author.dataValues
         }));
 
         return articles;
@@ -52,12 +52,12 @@ export class ArticlesService {
 
         const comments = commentsResult.map((comment) => ({
             ...comment.dataValues,
-            author: (comment.dataValues.author  as unknown as UserModel).dataValues,
+            author: comment.dataValues.author.dataValues,
         }))
         
         const article: Article = ({
             ...articleResult.dataValues,
-            author: (articleResult.dataValues.author as unknown as UserModel).dataValues,
+            author: articleResult.dataValues.author.dataValues,
             comments: comments,
         });
 

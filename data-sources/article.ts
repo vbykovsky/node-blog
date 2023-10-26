@@ -1,14 +1,14 @@
-import { Attributes, DataTypes, FindOptions } from "sequelize";
+import { Attributes, DataTypes, FindOptions, ModelStatic } from "sequelize";
 
 import { sequelizeInstance } from "./sources/source";
 
-import { ArticleAttributes, ArticleCreate, ArticleModel } from "../models/article";
+import { ArticleAttributes, ArticleCreate, ArticleModel, ArticleModelWithIncludedAuthor } from "../models/article";
 
 interface ArticlesRepository {
     create(createData: ArticleCreate): Promise<ArticleModel>;
 
-    findAll(options?: FindOptions<Attributes<ArticleModel>>): Promise<ArticleModel[]>;
-    findById(id: number): Promise<ArticleModel | null>;
+    findAll(options?: FindOptions<Attributes<ArticleModelWithIncludedAuthor>>): Promise<ArticleModelWithIncludedAuthor[]>;
+    findById(id: number): Promise<ArticleModelWithIncludedAuthor | null>;
 }
 
 export class ArticlesDataSource implements ArticlesRepository {
@@ -38,15 +38,15 @@ export class ArticlesDataSource implements ArticlesRepository {
         return this.model.create(createData);
     }
 
-    findAll(options?: FindOptions<Attributes<ArticleModel>>): Promise<ArticleModel[]> {
-        return this.model.findAll({
+    findAll(options?: FindOptions<Attributes<ArticleModelWithIncludedAuthor>>): Promise<ArticleModelWithIncludedAuthor[]> {
+        return (this.model as unknown as ModelStatic<ArticleModelWithIncludedAuthor>).findAll({
             ...options,
             include: this.articleAuthorAssociation
         });
     }
 
-    findById(id: number): Promise<ArticleModel | null> {
-        return this.model.findByPk(id, {
+    findById(id: number): Promise<ArticleModelWithIncludedAuthor | null> {
+        return (this.model as unknown as ModelStatic<ArticleModelWithIncludedAuthor>).findByPk(id, {
             include: this.articleAuthorAssociation,
         });
     }
